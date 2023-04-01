@@ -5,6 +5,8 @@ from ..cwxml.shader import ShaderManager
 from ..sollumz_properties import MaterialType
 from collections import namedtuple
 
+blender_version = bpy.app.version
+
 ShaderMaterial = namedtuple("ShaderMaterial", "name, ui_name, value")
 
 shadermats = []
@@ -166,12 +168,13 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
         name="TintGeometry", type="GeometryNodeTree")
     input = gnt.nodes.new("NodeGroupInput")
     output = gnt.nodes.new("NodeGroupOutput")
-
-    # Create the necessary sockets for the node group
-    gnt.inputs.new("NodeSocketGeometry", "Geometry")
-    gnt.inputs.new("NodeSocketVector", "Vector")
-    gnt.outputs.new("NodeSocketGeometry", "Geometry")
-    gnt.outputs.new("NodeSocketColor", "Color")
+    
+    if blender_version >= (3,5,0):
+        # Create the necessary sockets for the node group
+        gnt.inputs.new("NodeSocketGeometry", "Geometry")
+        gnt.inputs.new("NodeSocketVector", "Vector")
+        gnt.outputs.new("NodeSocketGeometry", "Geometry")
+        gnt.outputs.new("NodeSocketColor", "Color")
 
     # link input / output node to create geometry socket
     cptn = gnt.nodes.new("GeometryNodeCaptureAttribute")
